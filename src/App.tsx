@@ -2,26 +2,28 @@ import 'react-native-gesture-handler';
 
 import React from 'react';
 import {View, StatusBar} from 'react-native';
-import {ThemeProvider} from 'styled-components/native';
 import {NavigationContainer} from '@react-navigation/native';
+import {AppProvider, AppThemeProvider} from './hooks/index';
 
-import Routes from './routes/index';
+import Routes from './routes';
 
 import {theme} from './styles/theme';
 
 const App: React.FC = () => {
   return (
     <NavigationContainer>
-      <ThemeProvider theme={theme}>
+      <AppThemeProvider>
         <StatusBar
           barStyle="light-content"
           backgroundColor="transparent"
           translucent
         />
-        <View style={{flex: 1, backgroundColor: theme.colors.background}}>
-          <Routes />
-        </View>
-      </ThemeProvider>
+        <AppProvider>
+          <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+            <Routes />
+          </View>
+        </AppProvider>
+      </AppThemeProvider>
     </NavigationContainer>
   );
 };

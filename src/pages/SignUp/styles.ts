@@ -22,17 +22,7 @@ export const Title = styled.Text`
   margin: 64px 0 24px;
 `;
 
-export const ForgotPassword = styled.TouchableOpacity`
-  margin-top: 24px;
-`;
-
-export const ForgotPasswordText = styled.Text`
-  color: ${({theme}) => theme.colors.white};
-  font-family: ${({theme}) => theme.fonts['RobotoSlab-Regular']};
-  font-size: 14px;
-`;
-
-export const CreateAccountButton = styled.TouchableWithoutFeedback`
+export const BackToLoginButton = styled.TouchableWithoutFeedback`
   position: absolute;
   left: 0;
   bottom: 0;
@@ -51,8 +41,8 @@ export const Wrapper = styled.View`
   border-color: ${({theme}) => theme.colors.inputs};
 `;
 
-export const CreateAccountButtonText = styled.Text`
-  color: ${({theme}) => theme.colors.orange};
+export const BackToLoginButtonText = styled.Text`
+  color: ${({theme}) => theme.colors.white};
   font-family: ${({theme}) => theme.fonts['RobotoSlab-Regular']};
   font-size: 14px;
 `;
@@ -60,6 +50,6 @@ export const CreateAccountButtonText = styled.Text`
 export const Icon = styled(FeatherIcon).attrs({
   size: 20,
 })`
-  color: ${({theme}) => theme.colors.orange};
+  color: ${({theme}) => theme.colors.white};
   margin-right: 16px;
 `;

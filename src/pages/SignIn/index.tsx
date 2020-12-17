@@ -1,14 +1,152 @@
-import React from 'react';
-// import {Text} from 'react-native';
+import React, {useRef, useCallback} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {
+  View,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from 'react-native';
+import {Form} from '@unform/mobile';
+import {FormHandles} from '@unform/core';
+import * as Yup from 'yup';
 
-import {Container, Logo, Title} from './styles';
+import {useAuth} from '../../hooks/Auth';
 
-const SignIn: React.FC = () => (
-  <Container>
-    <Logo />
+import getValidationErrors from '../../utils/validationErros';
 
-    <Title>Faça seu login</Title>
-  </Container>
-);
+import Input from '../../components/Input';
+import Button from '../../components/Button';
+
+import {
+  Container,
+  Logo,
+  Title,
+  ForgotPassword,
+  ForgotPasswordText,
+  CreateAccountButton,
+  CreateAccountButtonText,
+  Wrapper,
+  Icon,
+} from './styles';
+
+interface SignInFormData {
+  email: string;
+  password: string;
+}
+
+const SignIn: React.FC = () => {
+  const navigation = useNavigation();
+  const {signIn, user} = useAuth();
+
+  console.log(user);
+
+  const formRef = useRef<FormHandles>(null);
+  const passwordInputRef = useRef<TextInput>(null);
+
+  const handleSignIn = useCallback(
+    async (data: SignInFormData) => {
+      try {
+        formRef.current?.setErrors({});
+
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .email('Digite um e-mail válido')
+            .required('E-mail é obrigatório'),
+          password: Yup.string().required('Senha é obrigatória'),
+        });
+
+        await schema.validate(data, {abortEarly: false});
+
+        await signIn({
+          email: data.email,
+          password: data.password,
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+
+          return;
+        }
+        Alert.alert(
+          'Erro na autenticação!',
+          'Ocorreu um erro ao fazer login, cheque as credenciais.',
+        );
+      }
+    },
+    [signIn],
+  );
+
+  return (
+    <>
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{flex: 1}}>
+          <Container>
+            <Logo />
+
+            <View>
+              <Title>Faça seu login</Title>
+            </View>
+
+            <Form ref={formRef} onSubmit={handleSignIn}>
+              <Input
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                name="email"
+                icon="mail"
+                placeholder="E-mail"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  passwordInputRef.current?.focus();
+                }}
+              />
+
+              <Input
+                ref={passwordInputRef}
+                textContentType="newPassword"
+                name="password"
+                icon="lock"
+                placeholder="Senha"
+                secureTextEntry
+                returnKeyType="send"
+                onSubmitEditing={() => {
+                  formRef.current?.submitForm();
+                }}
+              />
+
+              <Button
+                style={{marginTop: 8}}
+                onPress={() => {
+                  formRef.current?.submitForm();
+                }}>
+                Entrar
+              </Button>
+            </Form>
+
+            <ForgotPassword>
+              <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
+            </ForgotPassword>
+          </Container>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      <CreateAccountButton onPress={() => navigation.navigate('SignUp')}>
+        <Wrapper>
+          <Icon name="log-in" />
+          <CreateAccountButtonText>Criar uma conta</CreateAccountButtonText>
+        </Wrapper>
+      </CreateAccountButton>
+    </>
+  );
+};
 
 export default SignIn;
