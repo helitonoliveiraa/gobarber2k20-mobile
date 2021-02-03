@@ -48,7 +48,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
     setIsFilled(!!inputRef.current.value);
   }, []);
 
-  //useImperativeHandle is used to pass information of chield component to feather component
+  //useImperativeHandle is used to pass information from chield component to feather component
   useImperativeHandle(ref, () => ({
     focus() {
       inputElementRef.current.focus();
