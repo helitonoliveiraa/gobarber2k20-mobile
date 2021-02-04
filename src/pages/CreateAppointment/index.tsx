@@ -57,6 +57,23 @@ const CreateAppointment: React.FC = () => {
     loadProviders();
   }, []);
 
+  useEffect(() => {
+    async function handleLoadDate() {
+      const response = await api.get(
+        `/providers/${selectedProvider}/day-availability`,
+        {
+          params: {
+            year: selectedDate.getFullYear(),
+            month: selectedDate.getMonth() + 1,
+            day: selectedDate.getDate(),
+          },
+        },
+      );
+    }
+
+    handleLoadDate();
+  }, [selectedDate, selectedProvider]);
+
   const handleSelectProvider = useCallback((providerId: string) => {
     setSelectedProvider(providerId);
   }, []);
