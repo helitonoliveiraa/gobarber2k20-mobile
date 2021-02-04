@@ -4,6 +4,8 @@ import {BorderlessButton, RectButton} from 'react-native-gesture-handler';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 
+import Button from '../../components/Button';
+
 import {Provider} from './index';
 
 interface ProviderWrapperPros {
@@ -92,4 +94,19 @@ export const ProviderName = styled.Text<ProviderNamePros>`
     color: ${selected ? theme.colors.inputs : theme.colors.white};
     margin-left: 16px;
   `}
+`;
+
+export const Calendar = styled.View``;
+
+export const Title = styled.Text`
+  ${({theme}) => css`
+    font-size: 25px;
+    font-family: ${theme.fonts['RobotoSlab-Medium']};
+    color: ${theme.colors.white};
+    margin: 0 24px 24px;
+  `}
+`;
+
+export const ToggleDatePickerButton = styled(Button)`
+  margin: 0 24px;
 `;
