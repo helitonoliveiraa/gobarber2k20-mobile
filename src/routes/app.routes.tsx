@@ -11,6 +11,7 @@ const App = createStackNavigator();
 const AppRoutes: React.FC = () => {
   return (
     <App.Navigator
+      // initialRouteName="AppointmentCreated"
       screenOptions={{
         headerShown: false,
         cardStyle: {
