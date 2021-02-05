@@ -9,4 +9,5 @@ export const colors = {
   inputs: '#232129',
 
   error: '#F03442',
+  success: '#04D361',
 };

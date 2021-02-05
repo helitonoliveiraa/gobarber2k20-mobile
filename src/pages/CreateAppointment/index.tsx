@@ -34,6 +34,7 @@ import {
 
 interface RouteParams {
   providerId: string;
+  providerName: string;
 }
 
 export interface Provider {
@@ -59,9 +60,10 @@ const CreateAppointment: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedHour, setSelectedHour] = useState(0);
   const [providers, setProviders] = useState<Provider[]>([]);
-  const [selectedProvider, setSelectedProvider] = useState(
-    routeParams.providerId,
-  );
+  const [selectedProvider, setSelectedProvider] = useState({
+    providerId: routeParams.providerId,
+    providerName: routeParams.providerName,
+  });
 
   useEffect(() => {
     async function loadProviders() {
@@ -76,7 +78,7 @@ const CreateAppointment: React.FC = () => {
   useEffect(() => {
     async function handleLoadDate() {
       const response = await api.get(
-        `/providers/${selectedProvider}/day-availability`,
+        `/providers/${selectedProvider.providerId}/day-availability`,
         {
           params: {
             year: selectedDate.getFullYear(),
@@ -92,9 +94,15 @@ const CreateAppointment: React.FC = () => {
     handleLoadDate();
   }, [selectedDate, selectedProvider]);
 
-  const handleSelectProvider = useCallback((providerId: string) => {
-    setSelectedProvider(providerId);
-  }, []);
+  const handleSelectProvider = useCallback(
+    (providerId: string, providerName: string) => {
+      setSelectedProvider({
+        providerId,
+        providerName,
+      });
+    },
+    [],
+  );
 
   const HandleToggleDatePicker = useCallback(() => {
     setShowDatePicker((prevState) => !prevState);
@@ -122,11 +130,14 @@ const CreateAppointment: React.FC = () => {
       date.setMinutes(0);
 
       await api.post('/appointments', {
-        provider_id: selectedProvider,
+        provider_id: selectedProvider.providerId,
         date,
       });
 
-      navigate('AppointmentCreated', {date: date.getTime()});
+      navigate('AppointmentCreated', {
+        date: date.getTime(),
+        providerName: selectedProvider.providerName,
+      });
     } catch (err) {
       Alert.alert(
         'Ocorreu um erro!',
@@ -182,10 +193,13 @@ const CreateAppointment: React.FC = () => {
             keyExtractor={(provider) => provider.id}
             renderItem={({item: provider}) => (
               <WrapperProvider
-                selected={provider.id === selectedProvider}
-                onPress={() => handleSelectProvider(provider.id)}>
+                selected={provider.id === selectedProvider.providerId}
+                onPress={() =>
+                  handleSelectProvider(provider.id, provider.name)
+                }>
                 <ProviderAvatar source={{uri: provider.avatar_url}} />
-                <ProviderName selected={provider.id === selectedProvider}>
+                <ProviderName
+                  selected={provider.id === selectedProvider.providerId}>
                   {provider.name}
                 </ProviderName>
               </WrapperProvider>

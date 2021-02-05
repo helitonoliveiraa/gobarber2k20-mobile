@@ -1,10 +1,16 @@
 import styled, {css} from 'styled-components/native';
-import {FlatList} from 'react-native';
+import {FlatList, Platform} from 'react-native';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import {Provider} from './index';
 import {RectButton} from 'react-native-gesture-handler';
+
+const paddingTop = css`
+  padding-top: ${Platform.OS === 'ios'
+    ? getStatusBarHeight() + 24
+    : getStatusBarHeight()}px;
+`;
 
 export const Container = styled.View`
   flex: 1;
@@ -12,7 +18,7 @@ export const Container = styled.View`
 
 export const Header = styled.View`
   padding: 24px;
-  padding-top: ${getStatusBarHeight() + 24}px;
+  ${paddingTop};
   background: ${({theme}) => theme.colors.blackMedium};
 
   flex-direction: row;
