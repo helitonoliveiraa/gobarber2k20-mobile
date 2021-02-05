@@ -45,8 +45,8 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const navigateToCreateAppointment = useCallback(
-    (providerId: string) => {
-      navigate('CreateAppointment', {providerId});
+    (providerId: string, providerName: string) => {
+      navigate('CreateAppointment', {providerId, providerName});
     },
     [navigate],
   );
@@ -78,7 +78,9 @@ const Dashboard: React.FC = () => {
         ListHeaderComponent={<Title>Cabeleireiros</Title>}
         renderItem={({item: provider}) => (
           <WrapperProvider
-            onPress={() => navigateToCreateAppointment(provider.id)}>
+            onPress={() =>
+              navigateToCreateAppointment(provider.id, provider.name)
+            }>
             <ProviderAvatar
               source={{
                 uri:
