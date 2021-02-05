@@ -172,6 +172,6 @@ export const HourCardText = styled.Text<HourCardTextProps>`
   `}
 `;
 
-export const AppointmentButton = styled(Button)`
-  margin: 0 24px;
+export const CreateAppointmentButton = styled(Button)`
+  margin: 0 24px 24px;
 `;
