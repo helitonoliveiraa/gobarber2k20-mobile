@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
       <ProviderList
         data={providers}
         keyExtractor={(provider) => provider.id}
-        ListHeaderComponent={<Title>Cabeleleiros</Title>}
+        ListHeaderComponent={<Title>Cabeleireiros</Title>}
         renderItem={({item: provider}) => (
           <WrapperProvider
             onPress={() => navigateToCreateAppointment(provider.id)}>
