@@ -1,12 +1,6 @@
 import React, {useRef, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {
-  TextInput,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-} from 'react-native';
+import {TextInput, ScrollView, Alert} from 'react-native';
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 import * as Yup from 'yup';
@@ -123,120 +117,112 @@ const SignUp: React.FC = () => {
 
   return (
     <>
-      <KeyboardAvoidingView
-        style={{flex: 1}}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        enabled>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{flex: 1}}>
-          <Container>
-            <Header>
-              <ButtonBorderless onPress={() => goBack()}>
-                <Icon name="chevron-left" />
-              </ButtonBorderless>
+      <ScrollView keyboardShouldPersistTaps="handled">
+        <Container>
+          <Header>
+            <ButtonBorderless onPress={() => goBack()}>
+              <Icon name="chevron-left" />
+            </ButtonBorderless>
 
-              <HeaderTitle>Meu perfil</HeaderTitle>
+            <HeaderTitle>Meu perfil</HeaderTitle>
 
-              <ButtonBorderless onPress={signOut}>
-                <Icon name="power" />
-              </ButtonBorderless>
-            </Header>
+            <ButtonBorderless onPress={signOut}>
+              <Icon name="power" />
+            </ButtonBorderless>
+          </Header>
 
-            <AvatarContainer>
-              <Avatar
-                source={{
-                  uri:
-                    'https://avatars.githubusercontent.com/u/45343619?s=460&u=1929279b8eb8dbe2434c20e7ad7e239674b4cc17&v=4',
-                }}
-              />
+          <AvatarContainer>
+            <Avatar
+              source={{
+                uri: user.avatar_url,
+              }}
+            />
 
-              <WrapperPicIcon>
-                <Icon name="camera" />
-              </WrapperPicIcon>
-            </AvatarContainer>
+            <WrapperPicIcon>
+              <Icon name="camera" />
+            </WrapperPicIcon>
+          </AvatarContainer>
 
-            <Form
-              style={{marginHorizontal: 20}}
-              ref={formRef}
-              onSubmit={handleSignUp}
-              initialData={{
-                name: user.name,
-                email: user.email,
+          <Form
+            style={{marginHorizontal: 20}}
+            ref={formRef}
+            onSubmit={handleSignUp}
+            initialData={{
+              name: user.name,
+              email: user.email,
+            }}>
+            <Input
+              name="name"
+              icon="user"
+              placeholder="Nome"
+              autoCapitalize="words"
+              returnKeyType="next"
+              onEndEditing={() => {
+                emailInputRef.current?.focus();
+              }}
+            />
+
+            <Input
+              ref={emailInputRef}
+              name="email"
+              icon="mail"
+              autoCorrect={false}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              textContentType="newPassword"
+              placeholder="E-mail"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                oldPasswordRef.current?.focus();
+              }}
+            />
+
+            <Input
+              containerStyle={{marginTop: 32}}
+              ref={oldPasswordRef}
+              name="old_password"
+              icon="lock"
+              placeholder="Senha atual"
+              secureTextEntry
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordInputRef.current?.focus();
+              }}
+            />
+
+            <Input
+              ref={passwordInputRef}
+              name="password"
+              icon="lock"
+              placeholder="Nova senha"
+              secureTextEntry
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                ConfirmPasswordRef.current?.focus();
+              }}
+            />
+
+            <Input
+              ref={ConfirmPasswordRef}
+              name="password_confirmation"
+              icon="lock"
+              placeholder="Confirmar senha"
+              secureTextEntry
+              returnKeyType="send"
+              onSubmitEditing={() => {
+                formRef.current?.submitForm();
+              }}
+            />
+
+            <SaveButton
+              onPress={() => {
+                formRef.current?.submitForm();
               }}>
-              <Input
-                name="name"
-                icon="user"
-                placeholder="Nome"
-                autoCapitalize="words"
-                returnKeyType="next"
-                onEndEditing={() => {
-                  emailInputRef.current?.focus();
-                }}
-              />
-
-              <Input
-                ref={emailInputRef}
-                name="email"
-                icon="mail"
-                autoCorrect={false}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                textContentType="newPassword"
-                placeholder="E-mail"
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  oldPasswordRef.current?.focus();
-                }}
-              />
-
-              <Input
-                containerStyle={{marginTop: 32}}
-                ref={oldPasswordRef}
-                name="old_password"
-                icon="lock"
-                placeholder="Senha atual"
-                secureTextEntry
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  passwordInputRef.current?.focus();
-                }}
-              />
-
-              <Input
-                ref={passwordInputRef}
-                name="password"
-                icon="lock"
-                placeholder="Nova senha"
-                secureTextEntry
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  ConfirmPasswordRef.current?.focus();
-                }}
-              />
-
-              <Input
-                ref={ConfirmPasswordRef}
-                name="password_confirmation"
-                icon="lock"
-                placeholder="Confiramr senha"
-                secureTextEntry
-                returnKeyType="send"
-                onSubmitEditing={() => {
-                  formRef.current?.submitForm();
-                }}
-              />
-
-              <SaveButton
-                onPress={() => {
-                  formRef.current?.submitForm();
-                }}>
-                Confirmar mudanças
-              </SaveButton>
-            </Form>
-          </Container>
-        </ScrollView>
-      </KeyboardAvoidingView>
+              Confirmar mudanças
+            </SaveButton>
+          </Form>
+        </Container>
+      </ScrollView>
     </>
   );
 };
