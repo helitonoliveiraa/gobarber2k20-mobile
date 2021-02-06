@@ -29,15 +29,17 @@ import {
 } from './styles';
 import {useAuth} from '../../hooks/Auth';
 
-interface SignUpFormData {
+interface profileFormData {
   name: string;
   email: string;
+  old_password: string;
   password: string;
+  password_confirmation: string;
 }
 
 const SignUp: React.FC = () => {
   const {goBack} = useNavigation();
-  const {user, signOut} = useAuth();
+  const {user, signOut, updateUser} = useAuth();
 
   const formRef = useRef<FormHandles>(null);
   const emailInputRef = useRef<TextInput>(null);
@@ -45,45 +47,79 @@ const SignUp: React.FC = () => {
   const passwordInputRef = useRef<TextInput>(null);
   const ConfirmPasswordRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSignUp = useCallback(
+    async (data: profileFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome é obrigatório'),
-        email: Yup.string()
-          .email('Digite um e-mail válido')
-          .required('E-mail é obrigatório'),
-        password: Yup.string()
-          .required('Senha é obrigatória')
-          .min(6, 'No mínimo 6 digitos'),
-      });
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome é obrigatório'),
+          email: Yup.string()
+            .email('Digite um e-mail válido')
+            .required('E-mail é obrigatório'),
+          old_password: Yup.string(),
+          password: Yup.string().when('old_password', {
+            is: (val: string) => !!val.length,
+            then: Yup.string()
+              .min(6, 'Mínimo de 6 dígitos')
+              .required('Nova senha é obrigatória'),
+            otherwise: Yup.string(),
+          }),
+          password_confirmation: Yup.string()
+            .when('old_password', {
+              is: (val: string) => !!val.length,
+              then: Yup.string().required('Confirme a nova senha'),
+              otherwise: Yup.string(),
+            })
+            .oneOf([Yup.ref('password'), null], 'Confirmação incorreta'),
+        });
 
-      await schema.validate(data, {abortEarly: false});
+        await schema.validate(data, {abortEarly: false});
 
-      // await api.post('/users', data);
+        const {
+          name,
+          email,
+          old_password,
+          password,
+          password_confirmation,
+        } = data;
 
-      Alert.alert(
-        'Cadastro realizado!',
-        'Vocẽ já pode fazer seu logon no GoBarber!',
-      );
+        const formData = {
+          name,
+          email,
+          ...(old_password
+            ? {
+                old_password,
+                password,
+                password_confirmation,
+              }
+            : {}),
+        };
 
-      // navigation.goBack();
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
+        const response = await api.put('/profile', formData);
 
-        formRef.current?.setErrors(errors);
+        updateUser(response.data);
 
-        return;
+        Alert.alert('Sucesso!', 'Seu perfil foi atualizado com sucesso!');
+
+        goBack();
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+
+          return;
+        }
+
+        Alert.alert(
+          'Erro na atualização!',
+          'Ocorreu um erro ao atualizar, tente novamente.',
+        );
       }
-
-      Alert.alert(
-        'Erro no cadastro!',
-        'Ocorreu um erro ao fazer cadastro, tente novamente.',
-      );
-    }
-  }, []);
+    },
+    [goBack, updateUser],
+  );
 
   return (
     <>
@@ -157,7 +193,7 @@ const SignUp: React.FC = () => {
               <Input
                 containerStyle={{marginTop: 32}}
                 ref={oldPasswordRef}
-                name="olg_password"
+                name="old_password"
                 icon="lock"
                 placeholder="Senha atual"
                 secureTextEntry
