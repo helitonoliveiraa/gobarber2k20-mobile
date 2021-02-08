@@ -1,6 +1,7 @@
 import React, {useRef, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {TextInput, ScrollView, Alert} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
 import * as Yup from 'yup';
@@ -115,6 +116,38 @@ const SignUp: React.FC = () => {
     [goBack, updateUser],
   );
 
+  const handleUpdateAvatar = useCallback(() => {
+    launchImageLibrary({}, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        return;
+      }
+
+      if (response.errorCode) {
+        Alert.alert('Erro ao atualizar seu avatar.');
+        return;
+      }
+
+      const data = new FormData();
+
+      data.append('avatar', {
+        type: response.type,
+        name: response.fileName,
+        uri: response.uri,
+      });
+
+      console.log(response.fileName);
+
+      api.patch('/users/avatar', data).then((responseUpdated) => {
+        updateUser(responseUpdated.data);
+      });
+    });
+
+    launchCamera({}, (camResponse) => {
+      console.log('camera', camResponse);
+    });
+  }, [updateUser]);
+
   return (
     <>
       <ScrollView keyboardShouldPersistTaps="handled">
@@ -138,7 +171,7 @@ const SignUp: React.FC = () => {
               }}
             />
 
-            <WrapperPicIcon>
+            <WrapperPicIcon onPress={handleUpdateAvatar}>
               <Icon name="camera" />
             </WrapperPicIcon>
           </AvatarContainer>
