@@ -1,4 +1,4 @@
-import React, {useRef, useCallback} from 'react';
+import React, {useRef, useCallback, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {TextInput, ScrollView, Alert} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -10,6 +10,7 @@ import getValidationErrors from '../../utils/validationErros';
 import api from '../../services/api';
 
 import Input from '../../components/Input';
+import Popup from '../../components/Popup';
 
 import {
   Container,
@@ -41,6 +42,8 @@ const SignUp: React.FC = () => {
   const oldPasswordRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const ConfirmPasswordRef = useRef<TextInput>(null);
+
+  const [isHidden, setIsHidden] = useState(false);
 
   const handleSignUp = useCallback(
     async (data: profileFormData) => {
@@ -116,10 +119,11 @@ const SignUp: React.FC = () => {
     [goBack, updateUser],
   );
 
-  const handleUpdateAvatar = useCallback(() => {
+  const handleUpdateAvatarFromGallery = useCallback(() => {
     launchImageLibrary({}, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
+        setIsHidden(false);
         return;
       }
 
@@ -129,6 +133,7 @@ const SignUp: React.FC = () => {
       }
 
       const data = new FormData();
+      setIsHidden(false);
 
       data.append('avatar', {
         type: response.type,
@@ -142,16 +147,55 @@ const SignUp: React.FC = () => {
         updateUser(responseUpdated.data);
       });
     });
+  }, [updateUser]);
 
+  const handleUpdateAvatarFromCamera = useCallback(() => {
     launchCamera({}, (camResponse) => {
-      console.log('camera', camResponse);
+      console.log(camResponse);
+      if (camResponse.didCancel) {
+        console.log('User cancelled image picker');
+        setIsHidden(false);
+        return;
+      }
+
+      if (camResponse.errorCode) {
+        Alert.alert('Erro ao atualizar seu avatar.');
+        console.log(camResponse.errorCode);
+        return;
+      }
+
+      const data = new FormData();
+      setIsHidden(false);
+
+      data.append('avatar', {
+        type: camResponse.type,
+        name: camResponse.fileName,
+        uri: camResponse.uri,
+      });
+
+      console.log(camResponse.fileName);
+
+      api.patch('/users/avatar', data).then((responseUpdated) => {
+        updateUser(responseUpdated.data);
+      });
     });
   }, [updateUser]);
+
+  const handlePopup = useCallback(() => {
+    setIsHidden((prevState) => !prevState);
+  }, []);
 
   return (
     <>
       <ScrollView keyboardShouldPersistTaps="handled">
         <Container>
+          {isHidden && (
+            <Popup
+              handleUpdateAvatarFromGallery={handleUpdateAvatarFromGallery}
+              handleUpdateAvatarFromCamera={handleUpdateAvatarFromCamera}
+            />
+          )}
+
           <Header>
             <ButtonBorderless onPress={() => goBack()}>
               <Icon name="chevron-left" />
@@ -171,7 +215,7 @@ const SignUp: React.FC = () => {
               }}
             />
 
-            <WrapperPicIcon onPress={handleUpdateAvatar}>
+            <WrapperPicIcon onPress={handlePopup}>
               <Icon name="camera" />
             </WrapperPicIcon>
           </AvatarContainer>

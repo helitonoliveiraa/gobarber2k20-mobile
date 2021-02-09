@@ -19,6 +19,7 @@ const paddingTop = css`
 export const Container = styled.SafeAreaView`
   flex: 1;
   margin: 0 24px;
+  background: ${({theme}) => theme.colors.background};
 `;
 
 export const Header = styled.View`
@@ -47,7 +48,9 @@ export const AvatarContainer = styled.View`
   position: relative;
 `;
 
-export const Avatar = styled.Image`
+export const Avatar = styled.Image.attrs({
+  resizeMode: 'cover',
+})`
   width: 186px;
   height: 186px;
   border-radius: 93px;

@@ -19,7 +19,11 @@ const App: React.FC = () => {
           translucent
         />
         <AppProvider>
-          <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: theme.colors.background,
+            }}>
             <Routes />
           </View>
         </AppProvider>

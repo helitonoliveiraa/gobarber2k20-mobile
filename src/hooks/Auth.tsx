@@ -8,7 +8,6 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import api from '../services/api';
-import {PromiseTask} from 'react-native';
 
 interface User {
   id: string;
