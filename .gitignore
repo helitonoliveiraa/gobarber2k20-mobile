@@ -32,7 +32,7 @@ local.properties
 # Visual Studio Code
 #
 .vscode/
-
+coverage/
 # node.js
 #
 node_modules/
