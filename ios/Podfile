@@ -3,14 +3,14 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '10.0'
 
-target 'appgobarber' do
+target 'gobarberapp' do
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
 
 
 
-  target 'appgobarberTests' do
+  target 'gobarberappTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -25,10 +25,10 @@ target 'appgobarber' do
   end
 end
 
-target 'appgobarber-tvOS' do
-  # Pods for appgobarber-tvOS
+target 'gobarberapp-tvOS' do
+  # Pods for gobarberapp-tvOS
 
-  target 'appgobarber-tvOSTests' do
+  target 'gobarberapp-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
