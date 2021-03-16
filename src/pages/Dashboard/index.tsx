@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 
 import {useAuth} from '../../hooks/Auth';
+import placeholderImg from '../../assets/avatar-placeholder.png';
 
 import {
   Container,
@@ -64,11 +65,7 @@ const Dashboard: React.FC = () => {
         </HeaderTitle>
 
         <ProfileButton onPress={navigateToProfile}>
-          <UserAvatar
-            source={{
-              uri: user.avatar_url,
-            }}
-          />
+          <UserAvatar source={{uri: user.avatar_url}} />
         </ProfileButton>
       </Header>
 
@@ -81,12 +78,7 @@ const Dashboard: React.FC = () => {
             onPress={() =>
               navigateToCreateAppointment(provider.id, provider.name)
             }>
-            <ProviderAvatar
-              source={{
-                uri:
-                  'https://avatars.githubusercontent.com/u/45343619?s=460&u=1929279b8eb8dbe2434c20e7ad7e239674b4cc17&v=4',
-              }}
-            />
+            <ProviderAvatar source={{uri: provider.avatar_url}} />
 
             <ProviderInfo>
               <ProviderName>{provider.name}</ProviderName>
