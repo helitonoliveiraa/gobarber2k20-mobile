@@ -49,6 +49,7 @@ export const UserAvatar = styled.Image`
   width: 56px;
   height: 56px;
   border-radius: 28px;
+  background: ${({theme}) => theme.colors.gray};
 `;
 
 export const Title = styled.Text`
@@ -78,6 +79,7 @@ export const ProviderAvatar = styled.Image`
   width: 72px;
   height: 72px;
   border-radius: 36px;
+  background: ${({theme}) => theme.colors.gray};
 `;
 
 export const ProviderInfo = styled.View`

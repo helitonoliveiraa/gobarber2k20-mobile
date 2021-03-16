@@ -54,6 +54,7 @@ export const Avatar = styled.Image.attrs({
   width: 186px;
   height: 186px;
   border-radius: 93px;
+  background: ${({theme}) => theme.colors.gray};
 `;
 
 export const WrapperPicIcon = styled(RectButton)`

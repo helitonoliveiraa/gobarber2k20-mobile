@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 
 import getValidationErrors from '../../utils/validationErros';
 import api from '../../services/api';
+import placeholderImg from '../../assets/avatar-placeholder.png';
 
 import Input from '../../components/Input';
 import Popup from '../../components/Popup';
@@ -209,11 +210,7 @@ const SignUp: React.FC = () => {
           </Header>
 
           <AvatarContainer>
-            <Avatar
-              source={{
-                uri: user.avatar_url,
-              }}
-            />
+            <Avatar source={{uri: user.avatar_url}} />
 
             <WrapperPicIcon onPress={handlePopup}>
               <Icon name="camera" />

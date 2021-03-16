@@ -64,6 +64,7 @@ export const UserAvatar = styled.Image`
   width: 56px;
   height: 56px;
   border-radius: 28px;
+  background: ${({theme}) => theme.colors.gray};
 `;
 
 export const Content = styled.ScrollView``;
@@ -99,6 +100,7 @@ export const ProviderAvatar = styled.Image`
   width: 32px;
   height: 32px;
   border-radius: 16px;
+  background: ${({theme}) => theme.colors.gray};
 `;
 
 export const ProviderName = styled.Text<ProviderNamePros>`
